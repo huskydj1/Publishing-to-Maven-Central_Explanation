@@ -1,8 +1,8 @@
 # Meeting the Sonatype Package Requirements
-Sonatype has several requirements for packages in order to ensure that users can find relevant details from the metadata.
+Sonatype has several requirements for libraries in order to ensure that users can find relevant details from the metadata.
 
 ## 1. Javadoc and Sources
-We need Javadoc and Source attachments that allow users to access documentation for display and navigation in their IDE. This can be done automatically by using the Maven Source Plugin and Maven Javadoc plugin, as configured below:
+We need Javadoc and Source attachments that allow users to access documentation for display and navigation in their IDE. They can be configured automatically by using the Maven Source and Maven Javadoc plugin:
 ```
 <build>
   <plugins>
@@ -37,9 +37,9 @@ We need Javadoc and Source attachments that allow users to access documentation 
 ```
 
 ## 2. GPG Signature
-GnuPG allows you to encrypt and sign files in your library. Deployed files must contain a GPG signature. A `.asc` file containing the signature must be included for each file.
+GnuPG allows you to encrypt and sign files in your library. Deployed files must each contain a GPG signature.
 
-The details on creating a gpg key and signature were described in a previous guide file. We can automate the process of signing artifacts with the Maven GPG plugin:
+The details on creating a GPG key and signature were described in a previous guide file. We can automate the process of signing artifacts with the Maven GPG plugin:
 ```
 <build>
   <plugins>
@@ -61,7 +61,7 @@ The details on creating a gpg key and signature were described in a previous gui
 </build>
 ```
 
-In order for the plugin to work, the GPG command must be installed and the credentials should be available from `settings.xml`. The file should contain:
+In order for the plugin to work, the GPG command must be installed and your credentials should be available from `settings.xml`. The file should contain:
 ```
 <settings>
   <profiles>
@@ -80,7 +80,7 @@ In order for the plugin to work, the GPG command must be installed and the crede
 ```
 
 ## 3. Sufficient Metadata in `pom.xml`
-Your deployment needs to have a `pom.xml`, or Project Object Model, file. This is used by Maven to define your project. You must ensure that it contains the following information.
+Your deployment should have a `pom.xml`, or Project Object Model, file. This is used by Maven to define your project. You must ensure that it contains the following information.
 
 ### Correct Coordinates
 The project coordinates determine the location of your project in the Maven repository:
@@ -98,7 +98,7 @@ The project name, description, and url to your project website are also required
 ```
 
 ### License information
-You need to state the license(s) for your library. If you are publishing a library that is on Github, you can use  the auto-generated MIT license file. You must then include the following in your `pom.xml` file.
+You need to state the license(s) for your library. If you are publishing a repository on Github, you can use the auto-generated MIT license file. You must then include the following in your `pom.xml` file.
 
 ```
 <licenses>
@@ -132,10 +132,10 @@ In our case, the version control system that we are using is Git hosted on Githu
   <url>http://github.com/simpligility/ossrh-demo/tree/master</url>
 </scm>
 ```
-`connection` contains a read-only connection, `developerConnection` contains read/write access details, and `url` contains the front end Github page to our repository.
+`connection` contains read-only connection details, `developerConnection` contains read/write access details, and `url` contains the front-end Github page to your repository.
 
 ## 4. Distribution Management and Authentication
-In order to deploy to the OSSRH Nexus Repository Manager with the Nexus Staging Maven plugin, we have to configure Maven by attaching the following:
+In order to deploy to the OSSRH Nexus Repository Manager, we can use the Nexus Staging Maven plugin. This can be configured by attaching the following code to `pom.xml`:
 ```
 <distributionManagement>
   <snapshotRepository>
@@ -164,9 +164,9 @@ In order to deploy to the OSSRH Nexus Repository Manager with the Nexus Staging 
   </plugins>
 </build>
 ```
-Note: The code doesn't need to be copied exactly. If other plugins are used, the Nexus Staging Maven Plugin should be configured alongside them.  
+Note: These plugins should all be located together under `<plugins>`. 
 
-Those configurations take the user's account details to deploy from the `settings.xml` file. For authentication purposes, the file should contain the code:
+Those plugin configurations take the user's account details for deployment from the `settings.xml` file. For authentication purposes, the file should contain the code:
 ```
 <settings>
   <servers>
@@ -178,10 +178,14 @@ Those configurations take the user's account details to deploy from the `setting
   </servers>
 </settings>
 ```
-The jira id and pwd should be defined.
+Note: "your-jira-id" and "your-jira-pwd" should be substituted for your information. 
 
-##5. Nexus Staging
+## Final Note:
+These steps should satisfy Sonatype's requirements for your open source library. The following guide should take you through the final steps of deploying your library to the Maven Central repository. 
 
 ## References:
-1. https://www.devdungeon.com/content/publish-java-packages-maven-central-repository
-2. https://www.youtube.com/watch?v=bxP9IuJbcDQ&ab_channel=Recursive
+1. "Publish Java Packages to Maven Central Repository" - https://www.devdungeon.com/content/publish-java-packages-maven-central-repository
+2. "How to Publish a Java Library to Maven Central" - https://www.youtube.com/watch?v=bxP9IuJbcDQ&ab_channel=Recursive
+3. "OSSRH Guide" - https://central.sonatype.org/pages/ossrh-guide.html
+4. "Guide to uploading artifacts to the Central Repository" - https://maven.apache.org/repository/guide-central-repository-upload.html
+
